@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "pk-eli-mcp": {
+      "command": "pk-eli-mcp",
+      "env": {
+        "PK_ELI_CACHE_DIR": "~/.matematic/cache/pk-eli",
+        "PK_ELI_AUDIT_DIR": "~/.matematic/audit"
+      }
+    }
+  }
+}

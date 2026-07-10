@@ -1,0 +1,52 @@
+{
+ "features": [
+  {
+   "feature_idx": 0,
+   "name": "text",
+   "type": {
+    "dtype": "string",
+    "_type": "Value"
+   }
+  },
+  {
+   "feature_idx": 1,
+   "name": "case_details",
+   "type": {
+    "dtype": "string",
+    "_type": "Value"
+   }
+  },
+  {
+   "feature_idx": 2,
+   "name": "embeddings",
+   "type": {
+    "feature": {
+     "dtype": "float64",
+     "_type": "Value"
+    },
+    "_type": "List"
+   }
+  },
+  {
+   "feature_idx": 3,
+   "name": "citation_number",
+   "type": {
+    "dtype": "string",
+    "_type": "Value"
+   }
+  }
+ ],
+ "rows": [
+  {
+   "row_idx": 907,
+   "row": {
+    "text": "IN THE SUPREME COURT OF PAKISTAN \n(APPELLATE JURISDICTION) \n \n \nPRESENT: \nMR. JUSTICE SH. AZMAT SAEED \nMR. JUSTICE UMAR ATA BANDIAL \nMR. JUSTICE FAISAL ARAB \n \nCRIMINAL APPEAL NO. 93 OF 2013 \n(On appeal against the judgment dated 19.11.2012 \npassed by the High Court of Balochistan, Quetta in \nCriminal Jail Appeal No. 11/2012) \n \nMuhammad Sadiq \nâ€¦ Appellant \nVERSUS \nThe State \nâ€¦ Respondent \n \nFor the Appellant: \nMr. Muhammad Amjad Iqbal Qureshi, \nASC \n \nSyed Rifaqat Hussain Shah, AOR \n \nFor the State: \nMr. Tahir Iqbal Khattak, Addl. P.G. \nBalochistan \n \nDate of Hearing:  \n16.11.2016 \n \n \nJUDGMENT  \n \n \n \n \nFAISAL ARAB, J.- On 20.02.2000 at 11 a.m., one \nLashkar Khan lodged an FIR under Section 302 PPC alleging \nthat on the previous day i.e. 19.02.2000 at 7.15 a.m. the \nappellant committed murder of his cousin, Abdullah by firing \nat him with Kalashnikov. The appellant, who is a teacher by \nprofession and nephew of the complainant, absconded. The \ntrial nevertheless proceeded, the prosecution recorded its \nevidence and the appellant was convicted in absentia and \nsentenced to undergo life imprisonment. After about ten years \nof his conviction, the appellant surfaced and voluntarily \nsurrendered. Then on his application, his conviction in \nabsentia was set aside and de novo trial was ordered. After \nconclusion of the trial, the appellant was convicted and \nCriminal Appeal No. 93/2013 \n2\nsentenced to suffer life imprisonment, fined Rs.100,000/- and \nin default thereof was to undergo simple imprisonment for a \nfurther period of six months. The appellant preferred appeal \nagainst his conviction before the High Court which concurred \nwith the trial courtâ€™s decision and dismissed the same. The \nappellant then filed Jail Petition in this Court from which the \npresent appeal has arisen. \n  \n2. \n \nLearned counsel for the appellant argued that the \nalleged incident, as reported in the FIR, took place on \n19.02.2000 early in the morning at 7.15 a.m. yet no FIR was \nregistered on that date. He submitted that it has come on the \nrecord that on the date of the incident, the deceased Abdullah \nwas buried and it was only on the next day at 11 a.m. in the \nmorning that PW-1 Lashkar Khan lodged FIR wherein he has \nonly stated that the appellant committed murder of Abdullah \nby firing at him with a Kalashnikov. It was not mentioned in \nthe FIR that anyone saw the murder taking place. He \nsubmitted that it was only at the stage of recording of the \nevidence that PW-1, Lashkar Khan in his deposition stated \nthat on the day of the incident he heard gunshots and when \nwe went to the place from where sound of the gunshots came, \nhe saw that the appellant had a fight with the deceased \nAbdullah on account of a dispute over disconnection of water \nand on account of such dispute the appellant murdered \nAbdullah by firing at him with his Kalashnikov. In his \ndeposition PW-1, Lashkar Khan further stated that when he \nreached the place of occurrence PW-2, Anees-ur-Rehaman was \nalready present there, he then went to the Tehsilar of the area \nto lodge report of the incident. PW-2 Anees-ur-Rehman in his \ndeposition had stated that when he reached the place of \noccurrence after hearing gunshots he saw the appellant near \nthe mountain with a Kalashnikov in his hand. The learned \ncounsel for the appellant further stated that not a semblance \nCriminal Appeal No. 93/2013 \n3\nof such assertions made by PW-1 and PW2 in their respective \ndepositions find mention in the FIR as in the FIR it was simply \nstated by PW-1 that the appellant had committed murder of \nthe deceased Abdullah with a Kalashnikov. Learned Counsel \nfurther submitted that in his cross-examination PW-1, Lashkar \nKhan, contrary to what he stated in his examination-in-chief \nabout witnessing the incident, admitted that he had not seen \nfor himself the murder taking place and it was PW-2, Anees-\nur-Rehman, who had narrated to him that he saw the \nappellant near the mountain with a Kalashnikov. Learne",
+    "case_details": "{'id': 'Crl.A.93_2013.pdf', 'url': ''}",
+    "citation_number": "{'id': 'Crl.A.93_2013.pdf', 'url': ''}"
+   }
+  }
+ ],
+ "num_rows_total": 1414,
+ "num_rows_per_page": 100,
+ "partial": false
+}
