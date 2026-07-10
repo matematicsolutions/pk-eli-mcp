@@ -1,5 +1,7 @@
 # pk-eli-mcp
 
+<!-- mcp-name: io.github.matematicsolutions/pk-eli-mcp -->
+
 MCP server for Pakistani law: 967 federal statutes and 1,414 Supreme Court of
 Pakistan judgments, full text, with a strict citation contract on every response.
 
