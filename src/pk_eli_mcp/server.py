@@ -18,7 +18,7 @@ from mcp.types import ToolAnnotations
 
 from .audit import AuditLogger, hash_input, timer
 from .citations import case_citation, clean_line, parse_case_id
-from .corpus import get_corpus
+from .corpus import CorpusUnavailableError, get_corpus
 from .models import (
     CaseSearchResult,
     CaseSummary,
@@ -37,7 +37,7 @@ This MCP server exposes Pakistani federal legislation (967 laws, full text) and 
 
 ## Call order
 
-1. `pk_search_laws` - keyword search over the 967 federal statutes (title-weighted). Returns `law_id` for each hit. The first call downloads the 47 MB corpus once and caches it; expect roughly a minute of first-call latency on a slow link, a second or two on warm starts.
+1. `pk_search_laws` - keyword search over the 967 federal statutes (title-weighted). Returns `law_id` for each hit. The first call provisions the 47 MB corpus once and caches it (a pre-built GitHub release asset verified by sha256, with the pinned HuggingFace origin as fallback); expect roughly a minute of first-call latency on a slow link, a second or two on warm starts.
 2. `pk_get_law` - full statute text by `law_id`. Large statutes are truncated at roughly 300,000 characters.
 3. `pk_case_search` - server-side full-text search over the Supreme Court judgments. Returns `row_idx` and `case_id` for each hit.
 4. `pk_get_decision` - one judgment's full text, by `row_idx` (preferred, from search results) or by `case_id`.
@@ -94,6 +94,8 @@ def _audit() -> AuditLogger:
 
 
 def _map_upstream(exc: Exception) -> Exception:
+    if isinstance(exc, CorpusUnavailableError):
+        return ToolError("upstream_error", str(exc))
     if isinstance(exc, (httpx.HTTPStatusError, httpx.TransportError, httpx.TimeoutException)):
         return ToolError("upstream_error", f"Upstream error: {type(exc).__name__}: {exc}")
     return exc

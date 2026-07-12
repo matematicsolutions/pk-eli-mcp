@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pk-eli-mcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "MCP server for Pakistani law — 967 federal statutes and 1,414 Supreme Court judgments, full text, corpus-based with a strict citation contract."
 readme = "README.md"
 license = { text = "Apache-2.0" }

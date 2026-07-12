@@ -38,6 +38,39 @@ jobs:
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
 
+  # Mirrors the pinned HuggingFace corpus as a gzipped release asset + sha256 sidecar.
+  # NON-BLOCKING by design: PyPI publish never waits on this - if the origin download
+  # fails, the package still ships and clients fall back to HuggingFace directly.
+  # The asset is the fast path for first-call provisioning AND the fleet's activation
+  # metric (asset download_count = a human actually used the connector).
+  build-and-upload-corpus:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download pinned corpus from HuggingFace
+        run: |
+          curl -L --fail --retry 3 -o pk-laws-corpus.json \
+            "https://huggingface.co/datasets/AyeshaJadoon/Pakistan_Laws_Dataset/resolve/81bd25d52ad21f311af47d5ab4604daea9d83aa2/pdf_data.json"
+
+      - name: Compress + checksum
+        run: |
+          gzip -9 -n pk-laws-corpus.json
+          sha256sum pk-laws-corpus.json.gz > pk-laws-corpus.json.gz.sha256
+
+      - name: Upload as release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          gh release create "$TAG" --title "$TAG" \
+            --notes "pk-eli-mcp $TAG + pre-built statutes corpus (pinned HF snapshot 2025-01-30, sha256 alongside)" \
+            pk-laws-corpus.json.gz pk-laws-corpus.json.gz.sha256 \
+          || gh release upload "$TAG" pk-laws-corpus.json.gz pk-laws-corpus.json.gz.sha256 --clobber
+
   publish-mcp-registry:
     needs: build-and-publish-pypi
     # run after a successful PyPI publish, OR standalone on manual dispatch
