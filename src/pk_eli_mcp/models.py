@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 DATASET_NOTE_LAWS = (
@@ -105,3 +107,76 @@ class DecisionText(_Tolerant):
     byte_size: int | None = None
     truncated: bool = False
     dataset_note: str = DATASET_NOTE_CASES
+
+
+# ---------------------------------------------------------------------------
+# pk_verify_citations
+# ---------------------------------------------------------------------------
+
+DATASET_NOTE_VERIFY = (
+    "Verification runs against the local corpus snapshots (statutes 2025-01-30, judgments "
+    "2024-07-26). Statute section detection reads the 'N. Heading' markers that survived OCR, "
+    "so [MISSING] describes the machine-detectable text of the snapshot - treat it as a strong "
+    "signal and confirm at source_url before accusing anyone. The judgment corpus is a 1,414-"
+    "judgment SUBSET, so a case citation that is not found is reported as a gap, never as a "
+    "hallucination. Everything the tool could not check lands in `gaps`, not in silence."
+)
+
+CitationStatus = Literal["verified", "not_found", "content_mismatch", "unverified"]
+VerificationStatus = Literal[
+    "VERIFIED", "PARTIAL_VERIFIED", "HALLUCINATION_DETECTED", "NO_CITATIONS_FOUND"
+]
+GapType = Literal[
+    "out_of_corpus",
+    "unparseable_citation",
+    "upstream_unavailable",
+    "sections_not_checkable",
+    "subsection_not_checkable",
+]
+
+
+class ContentMatch(_Tolerant):
+    """Trigram comparison of a claimed description against the real provision."""
+
+    matched: bool
+    method: Literal["exact", "trigram-jaccard", "trigram-overlap"]
+    score: float
+
+
+class CitationCheck(_Tolerant):
+    """Verification outcome for one citation found in the input text."""
+
+    raw: str
+    kind: Literal["statute", "constitution", "supreme_court_case", "reporter_citation"]
+    act_reference: str | None = None
+    section: str | None = None
+    subsection: str | None = None
+    status: CitationStatus
+    detail: str
+    range_hint: str | None = None
+    claim: str | None = None
+    content_match: ContentMatch | None = None
+    human_readable_citation: str | None = None
+    source_url: str | None = None
+
+
+class VerificationGap(_Tolerant):
+    """An explicit incompleteness of the verification - never hidden in prose."""
+
+    gap_type: GapType
+    citation: str | None = None
+    note: str
+
+
+class CitationVerificationResult(_Tolerant):
+    """Result of ``pk_verify_citations``."""
+
+    status: VerificationStatus
+    summary: str
+    total: int
+    verified_count: int
+    failed_count: int
+    warning_count: int
+    citations: list[CitationCheck] = Field(default_factory=list)
+    gaps: list[VerificationGap] = Field(default_factory=list)
+    dataset_note: str = DATASET_NOTE_VERIFY

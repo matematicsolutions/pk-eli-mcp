@@ -28,6 +28,41 @@ and [scp.gov.pk](https://www.scp.gov.pk/) before relying on a provision.
 | `pk_get_law` | Full statute text by `law_id` (truncated at ~300,000 characters). |
 | `pk_case_search` | Server-side full-text search over the Supreme Court judgments. |
 | `pk_get_decision` | One judgment's full text, by `row_idx` or registry `case_id`. |
+| `pk_verify_citations` | Anti-hallucination check: extracts Pakistani legal citations from any text and verifies each against the corpus. |
+
+## Citation verification (`pk_verify_citations`)
+
+Run it on a drafted answer, memo or pleading before it reaches a reader. The tool
+extracts every checkable citation and verifies it against the corpus:
+
+- statute sections: `section 302 of the Pakistan Penal Code`,
+  `section 10A of the Pakistan Study Centres Act, 1976`, `sections 6 and 7 of ...`,
+  `sub-section (1) of section 6 of ...`;
+- act coordinates: `Act No. XLV of 1860`, `Ordinance No. LII of 2000` (Roman or Arabic);
+- Constitution articles: `Article 184(3) of the Constitution` (the tail is required -
+  a bare `Article 5` could be any instrument and is deliberately ignored);
+- Supreme Court registry citations: `Crl.A. 93/2013`, `Criminal Appeal No. 93 of 2013`.
+
+The semantics are deliberately hard:
+
+- A cited section that does not exist makes the whole result `HALLUCINATION_DETECTED`
+  with `isError=true`, plus a range hint of what does exist (`section 999 does not
+  exist in this act; 59 sections are machine-detectable in its text, numbered
+  section 1-66`).
+- `NO_CITATIONS_FOUND` is not a success - it means there was nothing to check.
+- A parenthetical description right after a citation
+  (`section 302 of the Pakistan Penal Code (punishment of qatl-i-amd)`) is
+  content-checked against the real provision text with a character-trigram match.
+  A mismatch is a review signal, never a hard block.
+- Everything the tool could NOT check is listed in a structured `gaps` field. The
+  judgment corpus is a subset and roughly half the statute PDFs carry no
+  machine-readable coordinate header, so an unresolvable citation is reported as
+  `out_of_corpus` ("existence UNKNOWN, not disproven"), never as a hallucination.
+
+The parse-verify-report pattern is adapted from
+[korean-law-mcp](https://github.com/chrisryugj/korean-law-mcp) (MIT) - see
+`THIRD_PARTY.md`. The same pattern shipped first in it-eli-mcp v0.6.0; the fleet
+rollout plan lives in [`docs/VERIFY-ROLLOUT.md`](docs/VERIFY-ROLLOUT.md).
 
 ## Citation contract
 
