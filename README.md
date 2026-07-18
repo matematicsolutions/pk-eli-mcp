@@ -88,6 +88,26 @@ claude mcp add pk-eli-mcp -- uvx pk-eli-mcp
 
 Or drop `.mcp.json.example` into your project as `.mcp.json`.
 
+
+### Windows 11 ze Smart App Control
+
+Smart App Control blokuje niepodpisane pliki wykonywalne, a `uvx.exe`, `pip.exe`
+i generowany przy instalacji `pk-eli-mcp.exe` podpisane nie sa. `python.exe`
+z python.org jest podpisany przez Python Software Foundation, wiec uruchomienie
+przez modul omija blokade:
+
+```bash
+python -m pip install pk-eli-mcp
+python -m pk_eli_mcp
+```
+
+```json
+{ "mcpServers": { "pk-eli-mcp": { "command": "python", "args": ["-m", "pk_eli_mcp"] } } }
+```
+
+Nie wylaczaj Smart App Control, zeby to obejsc - wylaczenia nie da sie cofnac
+bez ponownej instalacji systemu.
+
 ## Configuration
 
 | Env | Default | Purpose |
