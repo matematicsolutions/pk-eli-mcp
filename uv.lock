@@ -927,7 +927,7 @@ wheels = [
 
 [[package]]
 name = "pk-eli-mcp"
-version = "0.3.0"
+version = "0.3.3"
 source = { editable = "." }
 dependencies = [
     { name = "anyio" },
@@ -949,8 +949,8 @@ dev = [
 requires-dist = [
     { name = "anyio", specifier = ">=4.3" },
     { name = "diskcache", specifier = ">=5.6" },
-    { name = "fastmcp", specifier = ">=3.4" },
-    { name = "httpx", specifier = ">=0.27" },
+    { name = "fastmcp", specifier = ">=3.4,<4" },
+    { name = "httpx", specifier = ">=0.27,<1" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.10" },
     { name = "pydantic", specifier = ">=2.6" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
