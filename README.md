@@ -29,6 +29,7 @@ and [scp.gov.pk](https://www.scp.gov.pk/) before relying on a provision.
 | `pk_case_search` | Server-side full-text search over the Supreme Court judgments. |
 | `pk_get_decision` | One judgment's full text, by `row_idx` or registry `case_id`. |
 | `pk_verify_citations` | Anti-hallucination check: extracts Pakistani legal citations from any text and verifies each against the corpus. |
+| `pk_coverage` | Declare what this connector covers, when each family was captured, and - explicitly - what it does NOT cover. Every gap carries a fallback. |
 
 ## Citation verification (`pk_verify_citations`)
 
