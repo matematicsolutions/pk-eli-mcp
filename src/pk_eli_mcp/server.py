@@ -68,6 +68,7 @@ This MCP server exposes Pakistani federal legislation (967 laws, full text) and 
 
 ## Hard constraints
 
+- **Do not answer past the edge of this corpus** - when a search comes back empty, or the question touches material this connector does not carry, call `pk_coverage` and relay what it says is missing. Absence here is not absence in the law.
 - **Static snapshots, not current law** - statutes as of 2025-01-30, judgments as of 2024-07-26. Amendments and newer judgments are ABSENT. When advising on current law, say so and point to pakistancode.gov.pk / scp.gov.pk for verification.
 - **The judgment corpus is a subset** - 1,414 judgments is not the Court's full output; absence here proves nothing.
 - **No native ELI** - Pakistan has not deployed ELI; `eli_uri` is a stable canonical URL, never invented (see `eli_note`).
