@@ -1,0 +1,974 @@
+{
+  "package_version": "0.4.3",
+  "tools": {
+    "pk_case_search": {
+      "descriptor": {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Full-text search over 1,414 Supreme Court of Pakistan judgments (server-side).",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "limit": {
+              "default": 10,
+              "description": "max results, 1-20 (default 10).",
+              "type": "integer"
+            },
+            "query": {
+              "description": "free-text keywords, e.g. ``\"qatl-i-amd\"`` or ``\"fundamental rights\"``.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "type": "object"
+        },
+        "meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "name": "pk_case_search",
+        "outputSchema": {
+          "additionalProperties": true,
+          "description": "Result of ``pk_case_search``.",
+          "properties": {
+            "dataset_note": {
+              "default": "Corpus-based connector: judgments come from the Ibtehaj10/supreme-court-of-pak-judgments dataset on HuggingFace (1,414 Supreme Court of Pakistan judgments, full text, MIT), a static snapshot from 2024-07-26 covering a SUBSET of the Court's output - absence of a judgment here does not mean it does not exist.",
+              "type": "string"
+            },
+            "items": {
+              "items": {
+                "additionalProperties": true,
+                "description": "One judgment as returned by ``pk_case_search``.",
+                "properties": {
+                  "case_id": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "eli_note": {
+                    "default": "Pakistan has not deployed ELI. For statutes, eli_uri is the canonical Ministry of Law and Justice PDF URL (https://pakistancode.gov.pk/pdffiles/{law_id}); for judgments it is the HuggingFace dataset row URI. Stable and resolvable, never invented.",
+                    "type": "string"
+                  },
+                  "eli_uri": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "human_readable_citation": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "row_idx": {
+                    "type": "integer"
+                  },
+                  "snippet": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "source_url": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "row_idx"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "query": {
+              "type": "string"
+            },
+            "total_matches": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "query",
+            "total_matches"
+          ],
+          "type": "object"
+        }
+      },
+      "sha256": "0d4e82fd8f720834132c4cbbe2b422346708e59d2d03ebbed3dc37a3691b990a"
+    },
+    "pk_coverage": {
+      "descriptor": {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Declare what this connector covers, how it is sourced, and what it does NOT cover.\n\nCall this before telling a user that the law \"does not contain\" something, and whenever\na search comes back empty: the absence may be a gap in this connector rather than in the\nlaw. Every gap carries a fallback saying where to look instead.\n\nReturns:\n    ``Coverage`` with families, an as-of note, and a non-empty list of known gaps.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {},
+          "type": "object"
+        },
+        "meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "name": "pk_coverage",
+        "outputSchema": {
+          "additionalProperties": true,
+          "description": "What this connector covers, how it is sourced, and what it does not cover.",
+          "properties": {
+            "as_of_note": {
+              "description": "States what the dates mean, and what they do not promise.",
+              "type": "string"
+            },
+            "families": {
+              "items": {
+                "additionalProperties": true,
+                "description": "One data family this connector exposes.",
+                "properties": {
+                  "captured_at": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "description": "Date this family was last captured (ISO). None when queried live."
+                  },
+                  "live": {
+                    "default": true,
+                    "description": "True when queried live instead of from a snapshot.",
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "description": "Data family, e.g. 'Federal legislation'.",
+                    "type": "string"
+                  },
+                  "source": {
+                    "description": "Official source the data comes from.",
+                    "type": "string"
+                  },
+                  "tool": {
+                    "description": "Tool or tools that reach this family.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "tool",
+                  "source"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "known_gaps": {
+              "description": "Never empty. An empty list would mean 'not checked', not 'no gaps'.",
+              "items": {
+                "additionalProperties": true,
+                "description": "A known, named hole in this connector's coverage - plus the way around it.",
+                "properties": {
+                  "fallback": {
+                    "description": "Where to go instead.",
+                    "type": "string"
+                  },
+                  "family": {
+                    "description": "Which family the gap belongs to.",
+                    "type": "string"
+                  },
+                  "id": {
+                    "description": "Stable gap identifier.",
+                    "type": "string"
+                  },
+                  "missing": {
+                    "description": "What is NOT available through this connector.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "family",
+                  "missing",
+                  "fallback"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "status": {
+              "default": "ok",
+              "enum": [
+                "ok",
+                "degraded",
+                "failed"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "as_of_note"
+          ],
+          "type": "object"
+        }
+      },
+      "sha256": "95b11540715e527ec5387aebed50c9f3652477c6c9a3139363e23a0741f14e5a"
+    },
+    "pk_get_decision": {
+      "descriptor": {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Fetch one Supreme Court judgment's full text, by row index or registry citation.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "case_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "registry file id, e.g. ``\"Crl.A.93_2013.pdf\"`` (used when\n``row_idx`` is not given)."
+            },
+            "row_idx": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "0-based dataset row index from ``pk_case_search`` (preferred)."
+            }
+          },
+          "type": "object"
+        },
+        "meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "name": "pk_get_decision",
+        "outputSchema": {
+          "additionalProperties": true,
+          "description": "Result of ``pk_get_decision`` - the full text of one judgment.",
+          "properties": {
+            "byte_size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "case_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "content": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "dataset_note": {
+              "default": "Corpus-based connector: judgments come from the Ibtehaj10/supreme-court-of-pak-judgments dataset on HuggingFace (1,414 Supreme Court of Pakistan judgments, full text, MIT), a static snapshot from 2024-07-26 covering a SUBSET of the Court's output - absence of a judgment here does not mean it does not exist.",
+              "type": "string"
+            },
+            "eli_note": {
+              "default": "Pakistan has not deployed ELI. For statutes, eli_uri is the canonical Ministry of Law and Justice PDF URL (https://pakistancode.gov.pk/pdffiles/{law_id}); for judgments it is the HuggingFace dataset row URI. Stable and resolvable, never invented.",
+              "type": "string"
+            },
+            "eli_uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "human_readable_citation": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "row_idx": {
+              "type": "integer"
+            },
+            "source_url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "truncated": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "row_idx"
+          ],
+          "type": "object"
+        }
+      },
+      "sha256": "107a10103b294ed0a796de050472f2610a17ed6750e2c6dee53631a0c0484cd4"
+    },
+    "pk_get_law": {
+      "descriptor": {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Fetch the full text of one federal statute. Large statutes are truncated.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "law_id": {
+              "description": "the corpus file name from ``pk_search_laws``, e.g.\n``\"administrator00532129aba2e10fe634ab8fbd94c50b.pdf\"``.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "law_id"
+          ],
+          "type": "object"
+        },
+        "meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "name": "pk_get_law",
+        "outputSchema": {
+          "additionalProperties": true,
+          "description": "Result of ``pk_get_law`` - the full text of a statute, possibly truncated.",
+          "properties": {
+            "byte_size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "content": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "dataset_note": {
+              "default": "Corpus-based connector, not a live government API: Pakistan's official portal (pakistancode.gov.pk) exposes no machine interface, so statutes are served from the AyeshaJadoon/Pakistan_Laws_Dataset mirror on HuggingFace (967 federal laws, full text, ODC-BY 1.0), a static snapshot last updated 2025-01-30. Amendments after that date are NOT reflected - verify currency against pakistancode.gov.pk before relying on a provision.",
+              "type": "string"
+            },
+            "eli_note": {
+              "default": "Pakistan has not deployed ELI. For statutes, eli_uri is the canonical Ministry of Law and Justice PDF URL (https://pakistancode.gov.pk/pdffiles/{law_id}); for judgments it is the HuggingFace dataset row URI. Stable and resolvable, never invented.",
+              "type": "string"
+            },
+            "eli_uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "human_readable_citation": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "law_id": {
+              "type": "string"
+            },
+            "source_url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "title": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "truncated": {
+              "default": false,
+              "type": "boolean"
+            },
+            "year": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "law_id"
+          ],
+          "type": "object"
+        }
+      },
+      "sha256": "709fbaa96c6fd2c403fcb8e2277d8ac4bb3e02d00f8d9918bbc61e0097754304"
+    },
+    "pk_search_laws": {
+      "descriptor": {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Keyword search over Pakistan's 967 federal statutes (title-weighted ranking).",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "limit": {
+              "default": 10,
+              "description": "max results, 1-50 (default 10).",
+              "type": "integer"
+            },
+            "query": {
+              "description": "free-text keywords, e.g. ``\"penal code\"`` or ``\"electronic crimes\"``.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "type": "object"
+        },
+        "meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "name": "pk_search_laws",
+        "outputSchema": {
+          "additionalProperties": true,
+          "description": "Result of ``pk_search_laws``.",
+          "properties": {
+            "dataset_note": {
+              "default": "Corpus-based connector, not a live government API: Pakistan's official portal (pakistancode.gov.pk) exposes no machine interface, so statutes are served from the AyeshaJadoon/Pakistan_Laws_Dataset mirror on HuggingFace (967 federal laws, full text, ODC-BY 1.0), a static snapshot last updated 2025-01-30. Amendments after that date are NOT reflected - verify currency against pakistancode.gov.pk before relying on a provision.",
+              "type": "string"
+            },
+            "items": {
+              "items": {
+                "additionalProperties": true,
+                "description": "One statute as returned by ``pk_search_laws``.",
+                "properties": {
+                  "eli_note": {
+                    "default": "Pakistan has not deployed ELI. For statutes, eli_uri is the canonical Ministry of Law and Justice PDF URL (https://pakistancode.gov.pk/pdffiles/{law_id}); for judgments it is the HuggingFace dataset row URI. Stable and resolvable, never invented.",
+                    "type": "string"
+                  },
+                  "eli_uri": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "human_readable_citation": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "law_id": {
+                    "type": "string"
+                  },
+                  "snippet": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "source_url": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "year": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "law_id"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "query": {
+              "type": "string"
+            },
+            "total_matches": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "query",
+            "total_matches"
+          ],
+          "type": "object"
+        }
+      },
+      "sha256": "682d2e8cdc81f5681988161ae98095d8036138ea04fe95a9f984f9a84e1b007d"
+    },
+    "pk_verify_citations": {
+      "descriptor": {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Verify Pakistani legal citations found in a text against the corpus.\n\nExtracts statute sections (\"section 302 of the Pakistan Penal Code\",\n\"section 10A of the Pakistan Study Centres Act, 1976\"), act coordinates\n(\"Act No. XLV of 1860\"), Constitution articles (\"Article 184(3) of the\nConstitution\") and Supreme Court registry citations (\"Crl.A. 93/2013\"),\nthen checks each against the local corpus. A parenthetical description\nright after a citation is content-checked with a trigram match (mismatch =\nreview signal). Non-existent sections come back with a range hint of what\nDOES exist.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "max_citations": {
+              "default": 15,
+              "description": "cap on citations to verify (1..30, default 15).",
+              "type": "integer"
+            },
+            "text": {
+              "description": "the text to verify (an LLM answer, a memo, a pleading).",
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "type": "object"
+        },
+        "meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "name": "pk_verify_citations",
+        "outputSchema": {
+          "additionalProperties": true,
+          "description": "Result of ``pk_verify_citations``.",
+          "properties": {
+            "citations": {
+              "items": {
+                "additionalProperties": true,
+                "description": "Verification outcome for one citation found in the input text.",
+                "properties": {
+                  "act_reference": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Act Reference"
+                  },
+                  "claim": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Claim"
+                  },
+                  "content_match": {
+                    "anyOf": [
+                      {
+                        "additionalProperties": true,
+                        "description": "Trigram comparison of a claimed description against the real provision.",
+                        "properties": {
+                          "matched": {
+                            "title": "Matched",
+                            "type": "boolean"
+                          },
+                          "method": {
+                            "enum": [
+                              "exact",
+                              "trigram-jaccard",
+                              "trigram-overlap"
+                            ],
+                            "title": "Method",
+                            "type": "string"
+                          },
+                          "score": {
+                            "title": "Score",
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "matched",
+                          "method",
+                          "score"
+                        ],
+                        "title": "ContentMatch",
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "detail": {
+                    "title": "Detail",
+                    "type": "string"
+                  },
+                  "human_readable_citation": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Human Readable Citation"
+                  },
+                  "kind": {
+                    "enum": [
+                      "statute",
+                      "constitution",
+                      "supreme_court_case",
+                      "reporter_citation"
+                    ],
+                    "title": "Kind",
+                    "type": "string"
+                  },
+                  "range_hint": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Range Hint"
+                  },
+                  "raw": {
+                    "title": "Raw",
+                    "type": "string"
+                  },
+                  "section": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Section"
+                  },
+                  "source_url": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Source Url"
+                  },
+                  "status": {
+                    "enum": [
+                      "verified",
+                      "not_found",
+                      "content_mismatch",
+                      "unverified"
+                    ],
+                    "title": "Status",
+                    "type": "string"
+                  },
+                  "subsection": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Subsection"
+                  }
+                },
+                "required": [
+                  "raw",
+                  "kind",
+                  "status",
+                  "detail"
+                ],
+                "title": "CitationCheck",
+                "type": "object"
+              },
+              "title": "Citations",
+              "type": "array"
+            },
+            "dataset_note": {
+              "default": "Verification runs against the local corpus snapshots (statutes 2025-01-30, judgments 2024-07-26). Statute section detection reads the 'N. Heading' markers that survived OCR, so [MISSING] describes the machine-detectable text of the snapshot - treat it as a strong signal and confirm at source_url before accusing anyone. The judgment corpus is a 1,414-judgment SUBSET, so a case citation that is not found is reported as a gap, never as a hallucination. Everything the tool could not check lands in `gaps`, not in silence.",
+              "title": "Dataset Note",
+              "type": "string"
+            },
+            "failed_count": {
+              "title": "Failed Count",
+              "type": "integer"
+            },
+            "gaps": {
+              "items": {
+                "additionalProperties": true,
+                "description": "An explicit incompleteness of the verification - never hidden in prose.",
+                "properties": {
+                  "citation": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Citation"
+                  },
+                  "gap_type": {
+                    "enum": [
+                      "out_of_corpus",
+                      "unparseable_citation",
+                      "upstream_unavailable",
+                      "sections_not_checkable",
+                      "subsection_not_checkable"
+                    ],
+                    "title": "Gap Type",
+                    "type": "string"
+                  },
+                  "note": {
+                    "title": "Note",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "gap_type",
+                  "note"
+                ],
+                "title": "VerificationGap",
+                "type": "object"
+              },
+              "title": "Gaps",
+              "type": "array"
+            },
+            "status": {
+              "enum": [
+                "VERIFIED",
+                "PARTIAL_VERIFIED",
+                "HALLUCINATION_DETECTED",
+                "NO_CITATIONS_FOUND"
+              ],
+              "title": "Status",
+              "type": "string"
+            },
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "total": {
+              "title": "Total",
+              "type": "integer"
+            },
+            "verified_count": {
+              "title": "Verified Count",
+              "type": "integer"
+            },
+            "warning_count": {
+              "title": "Warning Count",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "status",
+            "summary",
+            "total",
+            "verified_count",
+            "failed_count",
+            "warning_count"
+          ],
+          "title": "CitationVerificationResult",
+          "type": "object"
+        }
+      },
+      "sha256": "f06270cdf3814cc875c4e6e5b0395d9226b116558902df125e92b70ff2cc5a97"
+    }
+  },
+  "toolset_sha256": "9c49686d206382480b1a1dca0ac74377a04c9db88009838d2369c237294e097a"
+}
