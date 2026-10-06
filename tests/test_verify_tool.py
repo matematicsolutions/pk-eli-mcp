@@ -47,9 +47,21 @@ CONSTITUTION = _LawStub(
 )
 
 
+# OCR lost the markers after section 9: the rest of the act is plain text, so the
+# last marker sits early in the text (the real Contract Act, 1872 has 238 sections).
+CONTRACT = _LawStub(
+    "contract-act-1872.pdf",
+    "THE CONTRACT ACT, 1872",
+    1872,
+    "THE CONTRACT ACT, 1872\n" + _sections(9)
+    + "\n"
+    + "\n".join(f"rest of the act without readable section markers, line {i}" for i in range(400)),
+)
+
+
 class _CorpusStub:
     def __init__(self) -> None:
-        self.laws = [SGA, CONSTITUTION]
+        self.laws = [SGA, CONSTITUTION, CONTRACT]
 
 
 class _FakeScClient:
@@ -112,6 +124,17 @@ async def test_hallucination_detected_with_range_hint():
     text = res.content[0].text
     assert "[HALLUCINATION_DETECTED]" in text
     assert "NEVER report 'verification complete'" in text
+
+
+@pytest.mark.asyncio
+async def test_section_past_early_ending_markers_is_unchecked_not_missing():
+    res = await _VERIFY("Under section 10 of the Contract Act, 1872 an agreement is a contract.")
+    sc = res.structured_content
+    assert sc["status"] != "HALLUCINATION_DETECTED"
+    check = sc["citations"][0]
+    assert check["status"] == "unverified"
+    assert "beyond the last machine-detectable section (9)" in check["detail"]
+    assert [g["gap_type"] for g in sc["gaps"]] == ["sections_not_checkable"]
 
 
 @pytest.mark.asyncio

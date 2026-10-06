@@ -12,6 +12,8 @@ Configuration via env:
 
 from __future__ import annotations
 
+import re
+
 import httpx
 from fastmcp import FastMCP
 from fastmcp.tools import ToolResult
@@ -34,10 +36,12 @@ from .models import (
 )
 from .sc_client import SC_DATASET, ScClient
 from .verify import (
+    MARKERS_COVER_TEXT,
     ActIndex,
     IndexedLaw,
     ParsedCitation,
     detect_subsections,
+    markers_end_fraction,
     match_claim,
     parse_citations,
     range_hint,
@@ -470,6 +474,27 @@ def _check_section(
             section=cite.section, subsection=cite.subsection, status="unverified",
             detail=f"[CHECK] {human} - the act exists but its {unit}s are not "
                    f"machine-detectable; not verified.",
+            human_readable_citation=human, source_url=source_url,
+        )
+
+    wanted = re.match(r"\d+", cite.section or "")
+    if (not sections.has(cite.section or "") and wanted and sections.numbers
+            and int(wanted.group()) > sections.numbers[-1]
+            and markers_end_fraction(law.text, sections) < MARKERS_COVER_TEXT):
+        # The markers stop early in the text, so the OCR lost them for the rest of the
+        # act (e.g. 9 of the Contract Act's 238 sections survive). Absence past the last
+        # marker is then not evidence: report it as not checked, never as [MISSING].
+        last = sections.numbers[-1]
+        gaps.append(VerificationGap(
+            gap_type="sections_not_checkable", citation=cite.raw,
+            note=f"{human_act}: {unit} {cite.section} lies beyond the last machine-detectable "
+                 f"{unit} ({last}); OCR markers past it may be lost, so it was NOT checked.",
+        ))
+        return CitationCheck(
+            raw=cite.raw, kind=kind, act_reference=human_act,
+            section=cite.section, subsection=cite.subsection, status="unverified",
+            detail=f"[CHECK] {human} - beyond the last machine-detectable {unit} ({last}); "
+                   f"not verified, confirm at source_url.",
             human_readable_citation=human, source_url=source_url,
         )
 

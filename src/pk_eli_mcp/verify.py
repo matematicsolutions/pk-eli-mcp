@@ -585,6 +585,24 @@ def section_map(text: str) -> SectionMap:
     return SectionMap(labels=kept, numbers=tuple(pruned), plausible=plausible)
 
 
+# Where the last detected marker sits, as a fraction of the text. When markers stop
+# early (Contract Act, 1872: 9 of 238 sections, last marker at 13% of the text), the
+# rest of the act was simply not machine-readable - a section number beyond the last
+# marker is then unchecked, not missing. Measured on the 2025-01-30 corpus: 594 of 799
+# mapped statutes have their last marker at >= 80% of the text.
+MARKERS_COVER_TEXT = 0.8
+
+
+def markers_end_fraction(text: str, sections: SectionMap) -> float:
+    """Position of the last detected section marker as a fraction of ``text`` (0.0-1.0)."""
+    if not sections.numbers or not text:
+        return 0.0
+    last = str(sections.numbers[-1])
+    ends = [m.start() for m in _SECTION_MARK_RE.finditer(text)
+            if re.match(r"\d+", m.group(1)).group() == last]  # type: ignore[union-attr]
+    return max(ends) / len(text) if ends else 0.0
+
+
 def range_hint(sections: SectionMap, wanted: str, unit: str = "section",
                scope: str = "this act") -> str:
     """'section 999 does not exist in this act; 48 sections are detectable ...'."""

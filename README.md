@@ -77,6 +77,16 @@ Pakistan has not deployed ELI. Every response still carries the fleet contract:
 
 ## Install
 
+As a Claude plugin (Claude Code or the desktop app, needs [uv](https://docs.astral.sh/uv/));
+see [plugin/README.md](plugin/README.md) for what it sends and stores:
+
+```
+/plugin marketplace add matematicsolutions/pk-eli-mcp
+/plugin install pk-eli-mcp@pk-eli-mcp
+```
+
+As a standalone server:
+
 ```bash
 uvx pk-eli-mcp          # or: pip install pk-eli-mcp
 ```
@@ -118,6 +128,11 @@ without reinstalling Windows.
 |---|---|---|
 | `PK_ELI_CACHE_DIR` | `~/.matematic/cache/pk-eli` | Corpus file + HTTP cache |
 | `PK_ELI_AUDIT_DIR` | `~/.matematic/audit` | JSONL audit log (one line per tool call) |
+| `PK_ELI_CORPUS_URL` | the `pk-laws-corpus.json.gz` asset of this repository's latest GitHub release | Statute corpus mirror; `''` skips it and downloads the pinned Hugging Face revision directly (the Claude plugin does this) |
+
+Network: statute searches run on the local corpus; judgment searches send the query to
+Hugging Face's public datasets-server. The corpus is downloaded once, from the mirror above or
+from Hugging Face. No LLM provider, no telemetry.
 
 ## Development
 
