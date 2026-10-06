@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/claude-plugin-marketplace.json",
+  "name": "pk-eli-mcp",
+  "description": "One plugin: Pakistani law with verifiable citations.",
+  "owner": {
+    "name": "Wieslaw Mazur / MateMatic Solutions",
+    "url": "https://matematicsolutions.com"
+  },
+  "plugins": [
+    {
+      "name": "pk-eli-mcp",
+      "description": "Pakistani federal statutes and Supreme Court judgments, full text, with a strict citation contract.",
+      "version": "0.4.4",
+      "author": {
+        "name": "Wieslaw Mazur / MateMatic Solutions"
+      },
+      "license": "Apache-2.0",
+      "source": "./plugin"
+    }
+  ]
+}
