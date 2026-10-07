@@ -1,9 +1,10 @@
 # pk-eli-mcp - Claude plugin
 
 Pakistani law with verifiable citations, as a Claude plugin. It runs the
-[pk-eli-mcp](https://github.com/matematicsolutions/pk-eli-mcp) MCP server, version 0.4.4
-from PyPI. `server/uv.lock` pins that package and every dependency with hashes, and the
-plugin starts it with `uv run --frozen`, so it runs exactly what was reviewed. Every
+[pk-eli-mcp](https://github.com/matematicsolutions/pk-eli-mcp) MCP server, version 0.4.4,
+taken from this repository at the commit tagged `v0.4.4` (the code released as 0.4.4 on PyPI).
+`server/uv.lock` pins that commit and every dependency with hashes, and the plugin starts it
+with `uv run --frozen`, so it runs exactly what was reviewed. Every
 answer carries the official source, so a citation can be checked instead of trusted.
 
 What it covers: 967 federal statutes in full text (search and fetch, from a corpus collected from pakistancode.gov.pk PDFs, snapshot of 2025-01-30, ODC-BY 1.0), 1,414 Supreme Court of Pakistan judgments (search and full decision, MIT), and a tool that checks the Pakistani citations in a text. The full tool list is in the
@@ -11,8 +12,9 @@ What it covers: 967 federal statutes in full text (search and fetch, from a corp
 
 ## Requirements
 
-Claude Code or the Claude desktop app, and [uv](https://docs.astral.sh/uv/) on your
-machine (it installs the locked packages on first start and runs the server).
+Claude Code or the Claude desktop app, [uv](https://docs.astral.sh/uv/) and git on your
+machine (uv fetches the pinned commit, installs the locked packages on first start and runs
+the server).
 
 ## Install
 

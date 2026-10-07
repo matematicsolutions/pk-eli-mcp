@@ -655,6 +655,17 @@ wheels = [
 ]
 
 [[package]]
+name = "pakistan-law-plugin-runtime"
+version = "0.4.4"
+source = { virtual = "." }
+dependencies = [
+    { name = "pk-eli-mcp" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pk-eli-mcp", git = "https://github.com/matematicsolutions/pk-eli-mcp?rev=012f9f5bca40f6522dc384e767a4c919cf370f83" }]
+
+[[package]]
 name = "pathable"
 version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -666,7 +677,7 @@ wheels = [
 [[package]]
 name = "pk-eli-mcp"
 version = "0.4.4"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/matematicsolutions/pk-eli-mcp?rev=012f9f5bca40f6522dc384e767a4c919cf370f83#012f9f5bca40f6522dc384e767a4c919cf370f83" }
 dependencies = [
     { name = "anyio" },
     { name = "diskcache" },
@@ -674,21 +685,6 @@ dependencies = [
     { name = "httpx" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/28/4c/66c9e0338cc12e0ce1ae7ef864147fe5b14c7286de9463dc83bc96524563/pk_eli_mcp-0.4.4.tar.gz", hash = "sha256:4aba1eacade81824a81f076b4041466f0fe1e951be98871e646b4faf70dc705f", size = 167083, upload-time = "2026-10-06T09:27:32.403Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/af/170d4d87b5326d649e9b016b7969f9d8fa8531d2c75d9b6a0b89f9c1b750/pk_eli_mcp-0.4.4-py3-none-any.whl", hash = "sha256:0c461dff67213aef77406c4a4b1138312bac7151187619a9d3dd8960cafe3921", size = 45046, upload-time = "2026-10-06T09:27:31.427Z" },
-]
-
-[[package]]
-name = "pk-eli-mcp-plugin-runtime"
-version = "0.4.4"
-source = { virtual = "." }
-dependencies = [
-    { name = "pk-eli-mcp" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "pk-eli-mcp", specifier = "==0.4.4" }]
 
 [[package]]
 name = "platformdirs"
