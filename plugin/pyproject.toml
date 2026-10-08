@@ -1,0 +1,9 @@
+# Wariant testowy (galaz verified-test): runtime z PyPI, start: uvx pk-eli-mcp==0.4.4
+[project]
+name = "pakistan-law-plugin-runtime"
+version = "0.4.4"
+requires-python = ">=3.11,<3.14"
+dependencies = ["pk-eli-mcp==0.4.4"]
+
+[tool.uv]
+package = false

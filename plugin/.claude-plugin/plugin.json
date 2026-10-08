@@ -24,13 +24,9 @@
   ],
   "mcpServers": {
     "pk-eli-mcp": {
-      "command": "uv",
+      "command": "uvx",
       "args": [
-        "run",
-        "--frozen",
-        "--project",
-        "${CLAUDE_PLUGIN_ROOT}/server",
-        "pk-eli-mcp"
+        "pk-eli-mcp==0.4.4"
       ],
       "env": {
         "PK_ELI_CORPUS_URL": ""
